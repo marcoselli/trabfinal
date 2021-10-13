@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  *
@@ -17,10 +19,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "person")
+@GenericGenerator(
+      name = "seq_person",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+              @Parameter(name = "sequence_name", value = "seq_person"),
+              @Parameter(name = "initial_value", value = "1"),
+              @Parameter(name = "increment_size", value = "1")
+      }
+)   
 public class Person implements Serializable {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_person")
     private int id;
     
     @Column

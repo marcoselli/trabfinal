@@ -5,9 +5,11 @@
  */
 package dao;
 
+import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.jpa.boot.spi.Bootstrap;
 import trabalhofinal.Student;
 import util.HibernateUtil;
 
@@ -15,14 +17,11 @@ import util.HibernateUtil;
  *
  * @author Marco
  */
-public class StudentDao implements GenericDao{
-     public static StudentDao daoGen = null;
+public class StudentDao extends GenericDao<Student>{
     
-    private SessionFactory factory;
-    private Transaction transaction;
-
+    private static StudentDao daoGen = null;
+ 
     private StudentDao() {
-        factory = HibernateUtil.getSessionFactory();
     }
     
     public static StudentDao getInstance(){
@@ -33,26 +32,8 @@ public class StudentDao implements GenericDao{
     }
     
     
-    public void insert(Object o){
-        
-        Student st = (Student) o;
-        Session session = factory.openSession();
-        
-        try{
-            transaction = session.beginTransaction();
-            session.merge(st);
-            transaction.commit();
-        }
-        catch(Exception e){
-             transaction.rollback();
-        }
-        finally{
-            session.flush();
-            session.close();
-        }
-    }
-    
     public void delete(int id){
+        /*
        Student st = null;
         Session session = factory.openSession();
         try{
@@ -68,5 +49,11 @@ public class StudentDao implements GenericDao{
             session.flush();
             session.close();
         }
+*/
+    }
+
+    @Override
+    public void insert(Student s) {
+        getEntityManager().merge(s);
     }
 }

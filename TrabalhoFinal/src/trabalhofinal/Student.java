@@ -9,9 +9,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  *
@@ -19,10 +20,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
+@GenericGenerator(
+      name = "seq_student",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+              @Parameter(name = "sequence_name", value = "seq_student"),
+              @Parameter(name = "initial_value", value = "1"),
+              @Parameter(name = "increment_size", value = "1")
+      }
+)  
 public class Student implements Serializable{
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_student")
     private String registration;
     
     @Column
@@ -31,7 +41,7 @@ public class Student implements Serializable{
     @Column(nullable = true)
     private float avg_grade;
     
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER) 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
     private Person p;
 
     public Student() {
